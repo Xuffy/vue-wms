@@ -1,6 +1,9 @@
 # 网站管理系统框架
 
-> 一套基于`vue.js` `element-ui`的网站管理系统框架
+> 一套基于`vue.js` `element-ui`的网站管理系统框架 
+
+[源码地址](https://github.com/Xuffy/vue-wms)
+[问题反馈](https://github.com/Xuffy/vue-wms/issues)
 
 ### 启动说明
 
