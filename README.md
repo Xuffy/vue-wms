@@ -45,6 +45,8 @@ npm run mock
 
 > [underscore.js](http://www.css88.com/doc/underscore/)
 
+> [mock.js](http://mockjs.com/)
+
 ### 目录结构
 <pre>
 .
@@ -67,6 +69,7 @@ npm run mock
 │   ├── components           // 各种组件
 │   ├── views                // 各种页面
 │   ├── service              // 各种服务
+│   │   ├── ajax.js          // ajax请求封装
 │   │   ├── config.js        // 项目配置
 │   │   ├── filters.js       // 过滤器
 │   │   ├── interceptor.js   // 拦截器
