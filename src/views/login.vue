@@ -67,6 +67,7 @@
   import Vue from 'vue'
   import $ from 'zepto'
   import store from 'store'
+  import md5 from 'js-md5'
   import {button, tooltip} from 'element-ui'
 
   Vue.use(button);
@@ -117,10 +118,11 @@
           this.passwordTip = '请输入密码';
         }
         if (this.username && this.password) {
-          this.ajax.post('/user/login', {username: this.username, password: this.password})
+          this.ajax.post('/user/login', {username: this.username, password: md5(this.password + this.username)})
             .then(function (data) {
+              _this.$parent.$emit('update-header', {username: data.user.name});
               store.set('user', data.user);
-              store.set('token', data.ticket);
+              store.set('token', data.ticket,new Date().getTime() + 5000);
               _this.hideBox = false;
               let timeout = setTimeout(function () {
                 clearTimeout(timeout);
@@ -141,6 +143,7 @@
     height: 398px;
     background-image: url("../assets/img/login-back.jpg");
     background-position: center;
+    background-size: cover;
     z-index: -1;
   }
 
@@ -262,8 +265,4 @@
     color: #ff3366;
   }
 
-  .login-form .btn {
-    background-color: #ff3366;
-    width: 100%;
-  }
 </style>

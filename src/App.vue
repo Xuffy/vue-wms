@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header v-bind:class="{fullScreen:isFullScreen}" :username="username"></v-header>
+    <v-header v-bind:class="{fullScreen:isFullScreen}"></v-header>
     <!--menu 组件必须放在第二个-->
     <v-menu v-bind:class="{fullScreen:isFullScreen}"></v-menu>
     <section class="dx-content" v-bind:class="{fullScreen:isFullScreen}">
@@ -37,7 +37,6 @@
     name: 'app',
     data: function () {
       return {
-        username: store.get('user') ? store.get('user').name : '',
         breadcrumbList: [],
         contentClass: [],
         isFullScreen: false,
@@ -45,11 +44,10 @@
       }
     },
     created: function () {
-
       // 设置内容全屏 即：隐藏header和menu
       this.$on('full-screen', this.fullScreen);
     },
-    beforeUpdate: function () {
+    updated: function () {
     },
     mounted: function () {
       this.updateBreadcrumb();

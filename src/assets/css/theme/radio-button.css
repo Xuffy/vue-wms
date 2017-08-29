@@ -105,6 +105,10 @@
     border-radius: 0 4px 4px 0
 }
 
+.el-radio-button:first-child:last-child .el-radio-button__inner{
+    border-radius: 4px
+}
+
 .el-radio-button__inner{
     display: inline-block;
     line-height: 1;

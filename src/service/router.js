@@ -43,5 +43,14 @@ export default [
     component: function (resolve) {
       require(['../views/login.vue'], resolve)
     }
+  },
+  {
+    path: '/pad',
+    meta: {
+      name: 'pad首页'
+    },
+    component: function (resolve) {
+      require(['../views/pad/index.vue'], resolve)
+    }
   }
 ]

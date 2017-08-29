@@ -589,14 +589,14 @@
 
   /* Collapse
   --------------------------*/
-  --collapse-border-color: color(var(--border-color-base) h(-3) s(27%) l(90%));
+  --collapse-border-color: #eeeeee;
   --collapse-header-height: 43px;
   --collapse-border-radius: 0;
   --collapse-header-padding: 20px;
   --collapse-header-fill: var(--color-white);
   --collapse-header-color: var(--color-extra-light-black);
   --collapse-header-size: 13px;
-  --collapse-content-fill: var(--color-dark-white);
+  --collapse-content-fill: #fbfbfb;
   --collapse-content-size: 13px;
   --collapse-content-color: var(--color-base-black);
 

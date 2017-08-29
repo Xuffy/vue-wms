@@ -26,6 +26,7 @@
 
 <script>
   import Vue from 'vue'
+  import store from 'store'
   import {row, input, col, MessageBox} from 'element-ui'
 
   Vue.use(row);
@@ -34,18 +35,21 @@
 
   export default {
     name: 'header',
-    props:['username'],
-    created: function () {
-      this.$parent.$on('update-name', function (params) {
-//        console.log('**********',params)
-      });
-    },
     data: function () {
-      return {}
+      return {
+        username: ''
+      }
+    },
+    created: function () {
+      this.updateHeader({username: store.get('user') ? store.get('user').name : ''});
+      this.$parent.$on('update-header', this.updateHeader);
     },
     methods: {
       clickMenu: function () {
         this.$parent.$emit('hide-menu');
+      },
+      updateHeader: function (params) {
+        this.username = params.username;
       },
       logout: function () {
         let _this = this;
@@ -100,17 +104,6 @@
     display: inline-block;
   }
 
-  /*.dx-header .logo .img-box:after {
-    content: '';
-    position: absolute;
-    right: 10%;
-    top: 50%;
-    height: 24px;
-    width: 1px;
-    margin-top: -12px;
-    background-color: #1b222b;
-  }*/
-
   .dx-header .mobile-title,
   .dx-header .title {
     color: #ffffff;
@@ -126,10 +119,11 @@
     padding-left: 30px;
   }
 
-  .dx-header .logout-btn{
+  .dx-header .logout-btn {
     display: inline-block;
     cursor: pointer;
   }
+
   .dx-header .logout-btn:hover span {
     color: #eaeaea;
   }
@@ -162,7 +156,7 @@
     width: 35%;
     display: inline-block;
     vertical-align: top;
-    /*margin-left: 40px;*/
+    margin-left: 20px;
     margin-top: 3px;
   }
 

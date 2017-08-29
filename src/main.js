@@ -1,13 +1,12 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
+import fastClick from 'fastclick'
 import App from './App.vue'
 import routerConfig from './service/router'
 import interceptor from './service/interceptor'
 import ajax from './service/ajax'
+import imgPreview from './directives/imgPreview.js'
 import * as filters from './service/filters'
 import store from 'store'
 import './service/util'
@@ -25,9 +24,10 @@ Vue.config.productionTip = false;
 
 // ajax请求配置
 Vue.prototype.ajax = new ajax({
-  mock: true, // 当环境为‘local’和‘mock’时 该设置有效
+  mock: process.env.NODE_ENV === 'mock' || false, // 当环境为‘local’和‘mock’时 该设置有效
 });
 
+Vue.http.options.emulateJSON = true;
 Vue.http.interceptors.push(interceptor);
 
 /******************路由配置*********************/
@@ -46,8 +46,8 @@ new Vue({
 }).$mount('#app');
 
 
+let routerApp = router.app.$children[0];
 router.beforeEach(function (to, from, next) {
-  let routerApp = router.app.$children[0];
 
   to.path === '/login' ?
     routerApp.$emit('full-screen', true) :
@@ -62,6 +62,26 @@ window.router = router;
 
 /******************登录验证*********************/
 
-!store.get('token') && router.push('/login');
+!store.get('token') && (window.location.hash.indexOf('#/pad') < 0) && router.push('/login');
+
+/******************pad显示*********************/
+
+window.location.hash.indexOf('#/pad') > -1 && routerApp.$emit('full-screen', true);
 
 /**********************************************/
+
+
+if( navigator.userAgent.match(/Android/i)
+  || navigator.userAgent.match(/webOS/i)
+  || navigator.userAgent.match(/iPhone/i)
+  || navigator.userAgent.match(/iPad/i)
+  || navigator.userAgent.match(/iPod/i)
+  || navigator.userAgent.match(/BlackBerry/i)
+  || navigator.userAgent.match(/Windows Phone/i)
+){
+  fastClick.attach(document.body);
+}
+/**********************************************/
+
+// Directive
+Vue.directive('imgPreview', imgPreview);

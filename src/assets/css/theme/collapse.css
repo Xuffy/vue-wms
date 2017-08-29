@@ -91,7 +91,7 @@
 }
 
 .el-collapse{
-    border: 1px solid rgb(236, 223, 223);
+    border: 1px solid #eeeeee;
     border-radius: 0;
 }
 
@@ -112,7 +112,7 @@
     background-color: #fff;
     color: #333333;
     cursor: pointer;
-    border-bottom: 1px solid rgb(236, 223, 223);
+    border-bottom: 1px solid #eeeeee;
     font-size: 13px;
 }
 
@@ -123,10 +123,10 @@
 
 .el-collapse-item__wrap{
     will-change: height;
-    background-color: rgb(253, 253, 253);
+    background-color: #fbfbfb;
     overflow: hidden;
     box-sizing: border-box;
-    border-bottom: 1px solid rgb(236, 223, 223);
+    border-bottom: 1px solid #eeeeee;
 }
 
 .el-collapse-item__content{

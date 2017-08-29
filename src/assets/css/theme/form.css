@@ -150,10 +150,6 @@
     margin-bottom: 0;
 }
 
-.el-form-item .el-form-item .el-form-item__content{
-    margin-left: 0 !important;
-}
-
 .el-form-item.is-error .el-input-group__append, .el-form-item.is-error .el-input-group__prepend, .el-form-item.is-error{}
 
 .el-form-item.is-error .el-input-group__append .el-input__inner, .el-form-item.is-error .el-input-group__prepend .el-input__inner, .el-form-item.is-error .el-input__inner{

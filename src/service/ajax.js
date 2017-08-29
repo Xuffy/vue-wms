@@ -2,6 +2,8 @@
 
 import env_config from './config'
 import Vue from 'vue'
+import _ from 'underscore'
+import store from 'store'
 import {Message} from 'element-ui'
 
 const ajax = function (config) {
@@ -28,7 +30,7 @@ const ajax = function (config) {
         message: res.data.msg,
         type: 'warning'
       });
-      throw new Error(res.data.msg);
+      throw new Error(res.data.msg + '\n' + res.url);
     }
 
     return res.data.data;
@@ -43,20 +45,30 @@ const ajax = function (config) {
    * @returns {Promise.<TResult>}
    */
   this.send = function (url, params, config) {
+    config = config || {};
+
     if (this.config.mock && (process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'mock')
       && MockData) {
       return new Promise(function (resolve, reject) {
         MockData.default(url, resolve, reject)
       });
     } else {
-      params = params || {};
       // 拼接api根路径
-      url = env_config.env.api + url;
-      url = '{0}?{1}'.format(url, $.param(params));
+      if (config.api) {
+        url = env_config.env[config.api] + url;
+      } else {
+        url = env_config.env.api + url;
+      }
+
+      // ignoreToken是否忽略token验证
+      if (!config.ignoreToken && _.isEmpty(store.get('token'))) {
+        router.push('/login');
+      }
+
 
       switch (this.type) {
         case 'GET':
-          return Vue.http.get(url, params).then(this.filter);
+          return Vue.http.get(url, {params: params}).then(this.filter);
         case 'POST':
           return Vue.http.post(url, params).then(this.filter);
       }
