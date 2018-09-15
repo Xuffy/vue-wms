@@ -1,6 +1,6 @@
-# UCN 采购商系统
+# VUE-WMS
 
-> 一套基于`vue.js` `element ui`的网站管理系统1
+> 一套基于`vue.js` `element ui`的网站管理系统
 
 ### 启动说明
 
