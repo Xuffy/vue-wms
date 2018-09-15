@@ -1,56 +1,73 @@
-export default [
-  {
-    path: '*',
-    meta: {
-      name: '订单列表'
-    },
-    component: function (resolve) {
-      require(['../views/order/index.vue'], resolve)
-    }
-  },
+import Vue from 'vue'
+import Vuex from 'vuex';
+import Router from 'vue-router'
+import Config from 'service/config';
+import Layout from 'components/layout/index.vue';
+// import $i from '../language/index';
+import {Notification, Message} from 'element-ui';
+import {localStore, sessionStore} from 'service/store';
+import Util from 'service/util';
+
+Vue.use(Router);
+
+export const routerMap = [
   {
     path: '/',
-    meta: {
-      name: '订单列表'
-    },
-    component: function (resolve) {
-      require(['../views/order/index.vue'], resolve)
-    }
-  },
-  {
-    path: '/order',
-    meta: {
-      name: '订单列表'
-    },
-    component: function (resolve) {
-      require(['../views/order/index.vue'], resolve)
-    }
-  },
-  {
-    path: '/order/info',
-    meta: {
-      name: '订单详情'
-    },
-    component: function (resolve) {
-      require(['../views/order/info.vue'], resolve)
-    }
+    component: Layout,
+    redirect: '/workbench/index',
+    hidden: true, // 在侧边栏中不显示该菜单
   },
   {
     path: '/login',
-    meta: {
-      name: '登录'
-    },
-    component: function (resolve) {
-      require(['../views/login.vue'], resolve)
-    }
+    hidden: true,
+    component: () => import('../views/login/index.vue')
   },
   {
-    path: '/pad',
-    meta: {
-      name: 'pad首页'
-    },
-    component: function (resolve) {
-      require(['../views/pad/index.vue'], resolve)
-    }
+    path: '/workbench',
+    component: Layout,
+    meta: {name: ''},
+    redirect: '/workbench/index',
+    noDropdown: true,
+    children: [
+      {
+        path: 'index',
+        name: 'workbench',
+        meta: {},
+        component: () => import('../views/workbench/index.vue')
+      }
+    ]
   }
 ]
+
+let router = new Router({
+  mode: 'history',
+  routes: routerMap
+});
+
+router.beforeResolve((to, from, next) => {
+  let ts = localStore.get('token')
+    , ri = localStore.get('router_intercept');
+
+  // 登录验证
+  // if ((to.path !== '/login' || from.path === '/login') && _.isEmpty(ts)) {
+  //   return next({path: '/login'});
+  // }
+
+  // 数据验证拦截
+  if (ri && (to.path !== ri.path || from.path === ri.path)) {
+    return next(ri);
+  }
+
+  // 权限验证
+  if (to.meta && to.meta.auth && !Util.$auth(to.meta.auth)) {
+
+    return Notification.error({
+      // title: $i.hintMessage.systemHints,
+      // message: $i.hintMessage.noAuthority
+    });
+  }
+
+  next();
+});
+
+export default router

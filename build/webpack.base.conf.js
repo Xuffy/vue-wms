@@ -1,25 +1,42 @@
 var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
-var webpack = require('webpack')
 var vueLoaderConfig = require('./vue-loader.conf')
+var cyo = require('./vue-build')
+var webpack = require('webpack')
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-var plugins = []
-  , providePlugin = {
-  $: resolve('src/assets/js/zepto.js'),
-  Zepto: resolve('src/assets/js/zepto.js'),
-  'window.Zepto': resolve('src/assets/js/zepto.js')
-};
+var plugins = [],
+  providePlugin = {
+    _: resolve(cyo.decipher('7dda'))
+  };
+
 
 // 只在本地环境和mock环境加载mock文件
-if ((process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'mock')) {
-  providePlugin.MockData = resolve('static/mock/init.js');
-}
+// if ((process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'mock')) {
+//   providePlugin.MockData = resolve('static/mock/init.js');
+// }
 
-// 打包后资源监听
 plugins.push(new webpack.ProvidePlugin(providePlugin));
-process.env.NODE_ENV !== 'local' && plugins.push(new BundleAnalyzerPlugin());
+// process.env.NODE_ENV !== 'local' && plugins.push(new BundleAnalyzerPlugin());
+/*plugins.push(new webpack.optimize.UglifyJsPlugin({
+  compress: {
+    warnings: false,
+    drop_debugger: true,
+    drop_console: true
+  }
+}));*/
+
+const createLintingRule = () => ({
+  test: /\.(js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [resolve('src'), resolve('test')],
+  options: {
+    formatter: require('eslint-friendly-formatter'),
+    emitWarning: !config.dev.showEslintErrorsInOverlay
+  }
+})
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -42,13 +59,15 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'assets': resolve('src/assets'),
-      'router': resolve('src/router'),
+      'service': resolve('src/service'),
+      'storejs': resolve(cyo.decipher('93c0')),
       'components': resolve('src/components'),
-      'zepto': resolve('src/assets/js/zepto.js')
+      'lib': resolve('src/lib'),
     }
   },
   module: {
     rules: [
+      ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -57,7 +76,9 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test'),
+          resolve('node_modules/_element-ui@2.4.4@element-ui/src'),
+          resolve('node_modules/_element-ui@2.4.4@element-ui/packages')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -68,6 +89,14 @@ module.exports = {
         }
       },
       {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('media/[name].[hash:7].[ext]')
+        }
+      },
+      {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
@@ -75,11 +104,13 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       },
+      {test: /iview.src.*?js$/, loader: 'babel-loader'},
       {
-        test: resolve('src/assets/js/zepto.js'),
-        loader: 'exports-loader?window.$!script-loader'
-      },
+        test: resolve('node_modules/underscoress/underscore.js'),
+        loader: 'exports-loader?window._!script-loader'
+      }
     ]
   },
   plugins: plugins
-};
+}
+;

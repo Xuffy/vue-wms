@@ -1,19 +1,24 @@
 'use strict';
+var time = new Date().getTime();
 
 module.exports = {
-  local:{
-    NODE_ENV: '"local"'
+  local: {
+    NODE_ENV: '"local"',
+    VERSION: 0
   },
-  develop:{
-    NODE_ENV: '"develop"'
+  develop: {
+    NODE_ENV: '"develop"',
+    VERSION: 0
   },
-  test:{
-    NODE_ENV: '"test"'
+  test: {
+    NODE_ENV: '"test"',
+    VERSION: time
   },
-  production:{
-    NODE_ENV: '"production"'
+  production: {
+    NODE_ENV: '"production"',
+    VERSION: time
   },
-  mock:{
+  mock: {
     NODE_ENV: '"mock"'
   }
 };

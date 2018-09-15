@@ -1,32 +1,18 @@
 {
   "presets": [
-    [
-      "env",
-      {
-        "modules": false,
-        "targets": {
-          "browsers": [
-            "> 1%",
-            "last 2 versions",
-            "not ie <= 8"
-          ]
-        }
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
       }
-    ],
+    }],
     "stage-2"
   ],
-  "plugins": [
-    "transform-runtime",
-    [
-      "component",
-      [
-        {
-          "libraryName": "element-ui",
-          "styleLibraryName": "~src/assets/css/theme"
-        }
-      ]
-    ]
-  ],
+  "plugins": ["transform-runtime","transform-vue-jsx"],
   "env": {
+    /*"test": {
+      "presets": ["env", "stage-2"],
+      "plugins": ["istanbul"]
+    }*/
   }
 }

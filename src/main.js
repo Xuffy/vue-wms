@@ -1,87 +1,64 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
-import fastClick from 'fastclick'
-import App from './App.vue'
-import routerConfig from './service/router'
-import interceptor from './service/interceptor'
-import ajax from './service/ajax'
-import imgPreview from './directives/imgPreview.js'
-import * as filters from './service/filters'
-import store from 'store'
-import './service/util'
+import App from './App'
+import router from 'service/router'
+import ajax from 'service/ajax'
+import config from 'service/config';
+import filters from 'service/filters'
+import directive from 'service/directive'
+import apis from '@/apis/index';
+import util from 'service/util';
+import '../theme/index.css';
+import 'assets/style/main.less';
+import ElementUI from 'element-ui';
+import store from './store';
+import locale from 'element-ui/lib/locale';
+import {localStore} from 'service/store';
+import 'element-ui/lib/theme-chalk/base.css';
+
+////////////////////////////////////////////////////////
 
 
-Vue.use(VueRouter);
-Vue.use(VueResource);
 
-/******************过滤器***********************/
-Vue.filter('date', filters.dateFilter);
-/***********************************************/
 
-// 设置为 false 以阻止 vue 在启动时生成生产提示
+Vue.use(ElementUI, {size: 'mini'});
+
 Vue.config.productionTip = false;
+Vue.prototype.$ajax = new ajax();
+Vue.prototype.$apis = apis;
 
-// ajax请求配置
-Vue.prototype.ajax = new ajax({
-  mock: process.env.NODE_ENV === 'mock' || false, // 当环境为‘local’和‘mock’时 该设置有效
+
+// 去掉console
+if (config.ENV_FLAG === 'production') {
+  console.log = () => {
+  }
+  // 屏蔽开发环境warn
+  console.warn = () => {
+  }
+}
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]);
 });
 
-Vue.http.options.emulateJSON = true;
-Vue.http.interceptors.push(interceptor);
-
-/******************路由配置*********************/
-const router = new VueRouter({
-  // mode: 'history',
-  linkActiveClass: 'active',
-  hashbang: true,
-  routes: routerConfig
+Object.keys(directive).forEach(key => {
+  Vue.directive(key, directive[key]);
 });
+
+Object.keys(util).forEach(key => {
+  Vue.prototype[key] = util[key];
+});
+
+config.AUTH = config.ENV_FLAG === 'local' ? config.AUTH : true;
+
+// underscorejs配置template
+_.templateSettings = {
+  interpolate: /\{(.+?)\}/g
+};
 
 new Vue({
-  router: router,
-  render: function (h) {
-    return h(App);
-  }
-}).$mount('#app');
-
-
-let routerApp = router.app.$children[0];
-router.beforeEach(function (to, from, next) {
-
-  to.path === '/login' ?
-    routerApp.$emit('full-screen', true) :
-    routerApp.$emit('full-screen', false);
-
-  next();
+  el: '#app',
+  store,
+  router,
+  template: '<App/>',
+  components: {App}
 });
-
-window.router = router;
-/***********************************************/
-
-
-/******************登录验证*********************/
-
-!store.get('token') && (window.location.hash.indexOf('#/pad') < 0) && router.push('/login');
-
-/******************pad显示*********************/
-
-window.location.hash.indexOf('#/pad') > -1 && routerApp.$emit('full-screen', true);
-
-/**********************************************/
-
-
-if( navigator.userAgent.match(/Android/i)
-  || navigator.userAgent.match(/webOS/i)
-  || navigator.userAgent.match(/iPhone/i)
-  || navigator.userAgent.match(/iPad/i)
-  || navigator.userAgent.match(/iPod/i)
-  || navigator.userAgent.match(/BlackBerry/i)
-  || navigator.userAgent.match(/Windows Phone/i)
-){
-  fastClick.attach(document.body);
-}
-/**********************************************/
-
-// Directive
-Vue.directive('imgPreview', imgPreview);
